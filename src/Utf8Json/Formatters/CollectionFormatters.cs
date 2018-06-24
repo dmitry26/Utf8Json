@@ -684,11 +684,17 @@ namespace Utf8Json.Formatters
 
             writer.WriteBeginArray();
 
-            var i = 0;
-            foreach (var item in value)
+            var en = value.GetEnumerator();
+
+            if (en.MoveNext())
             {
-                if (i != 0) writer.WriteValueSeparator();
-                formatter.Serialize(ref writer, item, formatterResolver);
+                formatter.Serialize(ref writer,en.Current,formatterResolver);
+
+                while (en.MoveNext())
+                {
+                    writer.WriteValueSeparator();
+                    formatter.Serialize(ref writer,en.Current,formatterResolver);
+                }
             }
 
             writer.WriteEndArray();
