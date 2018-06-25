@@ -16,8 +16,8 @@ namespace Utf8Json.Tests
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
         }
 
-        public static object[] primitiveFormatterTestData = new object[]
-        {
+		public static IEnumerable<object[]> primitiveFormatterTestData = new List<object[]>
+		{
             new object[] { Int16.MinValue, Int16.MaxValue },
             new object[] { (Int16?)100, null },
             new object[] { Int32.MinValue, Int32.MaxValue },
@@ -55,8 +55,8 @@ namespace Utf8Json.Tests
             Convert(y).Is(y);
         }
 
-        public static object[] enumFormatterTestData = new object[]
-        {
+		public static IEnumerable<object[]> enumFormatterTestData = new List<object[]>
+		{
             new object[] { ByteEnum.A, ByteEnum.B },
             new object[] { (ByteEnum?)ByteEnum.C, null },
             new object[] { SByteEnum.A, SByteEnum.B },
@@ -84,9 +84,8 @@ namespace Utf8Json.Tests
             Convert(y).Is(y);
         }
 
-
-        public static object[] standardStructFormatterTestData = new object[]
-        {
+		public static IEnumerable<object[]> standardStructFormatterTestData = new List<object[]>
+		{
             new object[] { decimal.MaxValue, decimal.MinValue, null },
             //new object[] { TimeSpan.MaxValue, TimeSpan.MinValue, null },
             //new object[] { DateTimeOffset.MaxValue, DateTimeOffset.MinValue, null },
@@ -116,8 +115,8 @@ namespace Utf8Json.Tests
             Convert(z).Is(z);
         }
 
-        public static object[] standardClassFormatterTestData = new object[]
-        {
+		public static IEnumerable<object[]> standardClassFormatterTestData = new List<object[]>
+		{
             new object[] { new byte[] { 1, 10, 100 }, new byte[0] { }, null },
             new object[] { "aaa", "", null },
             new object[] { new Uri("Http://hogehoge.com"), new Uri("Https://hugahuga.com"), null },

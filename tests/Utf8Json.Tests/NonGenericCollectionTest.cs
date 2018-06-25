@@ -57,12 +57,13 @@ namespace Utf8Json.Tests
             }
         }
 
+		[Fact]
         public void IEnumerableTest()
         {
             var xs = new System.Collections.ArrayList { 1, 100, "hoge", 999.888 };
             {
-                var bin = JsonSerializer.Serialize<IEnumerable>(xs);
-                var v = JsonSerializer.Deserialize<IEnumerable>(bin).GetEnumerator();
+                var bin = JsonSerializer.Serialize<IEnumerable>(xs);				
+				var v = JsonSerializer.Deserialize<IEnumerable>(bin).GetEnumerator();
 
                 v.MoveNext();
                 ((double)v.Current).Is((double)1);
@@ -78,6 +79,7 @@ namespace Utf8Json.Tests
             }
         }
 
+		[Fact]
         public void ICollectionTest()
         {
             var xs = new System.Collections.ArrayList { 1, 100, "hoge", 999.888 };

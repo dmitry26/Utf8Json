@@ -12,8 +12,8 @@ namespace Utf8Json.Tests
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
         }
 
-        public static object[] tupleTestData = new object[]
-        {
+		public static IEnumerable<object[]> tupleTestData = new List<object[]>
+		{
             new object[] { Tuple.Create(1) },
             new object[] { Tuple.Create(1,2) },
             new object[] { Tuple.Create(1,2,3) },
@@ -31,8 +31,8 @@ namespace Utf8Json.Tests
             Convert(data).IsStructuralEqual(data);
         }
 
-        public static object[] valueTupleTestData = new object[]
-        {
+		public static IEnumerable<object[]> valueTupleTestData = new List<object[]>
+		{
             new object[] { ValueTuple.Create(1),null },
             new object[] { ValueTuple.Create(1,2),null },
             new object[] { ValueTuple.Create(1,2,3),null },
@@ -45,15 +45,15 @@ namespace Utf8Json.Tests
 
         [Theory]
         [MemberData(nameof(valueTupleTestData))]
-        public void TupleTest<T>(T data, T? @nullData)
+        public void TupleTest2<T>(T data, T? @nullData)
             where T : struct
         {
             Convert(data).IsStructuralEqual(data);
             Convert(@nullData).IsNull();
         }
 
-        public static object[] keyValuePairData = new object[]
-        {
+		public static IEnumerable<object[]> keyValuePairData = new List<object[]>
+		{
             new object[] { new KeyValuePair<int, int>(1,2), null },
             new object[] { new KeyValuePair<int, int>(3,4), new KeyValuePair<int, int>(5,6) },
         };
@@ -67,8 +67,8 @@ namespace Utf8Json.Tests
             Convert(t2).IsStructuralEqual(t2);
         }
 
-        public static object[] byteArraySegementData = new object[]
-        {
+		public static IEnumerable<object[]> byteArraySegementData = new List<object[]>
+		{
             new object[] { new ArraySegment<byte>(new byte[] { 0, 0, 1, 2, 3 }, 2, 3), null, new byte[] { 1, 2, 3 }  },
             new object[] { new ArraySegment<byte>(new byte[0], 0, 0), null, new byte[0] },
         };
@@ -78,10 +78,10 @@ namespace Utf8Json.Tests
         public void ByteArraySegmentTest(ArraySegment<byte> t, ArraySegment<byte>? t2, byte[] reference)
         {
             JsonSerializer.Serialize(t).Is(JsonSerializer.Serialize(reference));
-            Convert(t).Array.Is(reference);
-            // MessagePackBinary.IsNil(JsonSerializer.Serialize(t2), 0).IsTrue();
-        }
-
-
+            Convert(t).Array.Is(reference);			
+			var foo2 = JsonSerializer.Deserialize<object>(JsonSerializer.Serialize(t2));
+			var nil = new byte[] { (byte)'n',(byte)'u',(byte)'l',(byte)'l' };
+			JsonSerializer.Serialize(t2).Is(nil);
+		}
     }
 }

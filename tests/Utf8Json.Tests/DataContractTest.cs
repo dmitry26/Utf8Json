@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Utf8Json.Tests
 {
-
-
-
     public class DataContractTest
     {
         [DataContract]
@@ -72,5 +66,4 @@ namespace Utf8Json.Tests
             Encoding.UTF8.GetString(bin).Is(@"{""MyProperty1"":100,""MyProperty2"":""foobar""}");
         }
     }
-
 }
