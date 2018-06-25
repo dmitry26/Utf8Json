@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Utf8Json.CodeGenerator.Generator;
+using Utf8Json.UniversalCodeGenerator.Generator;
 
 namespace Utf8Json.UniversalCodeGenerator
 {
