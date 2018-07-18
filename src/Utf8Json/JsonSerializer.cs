@@ -108,15 +108,15 @@ namespace Utf8Json
         /// <summary>
         /// Serialize to stream(write async).
         /// </summary>
-        public static System.Threading.Tasks.Task SerializeAsync<T>(Stream stream, T value)
+        public static System.Threading.Tasks.Task SerializeAsync<T>(Stream stream, T value, System.Threading.CancellationToken cancelToken = default)
         {
-            return SerializeAsync<T>(stream, value, defaultResolver);
+            return SerializeAsync<T>(stream, value, defaultResolver, cancelToken);
         }
 
         /// <summary>
         /// Serialize to stream(write async) with specified resolver.
         /// </summary>
-        public static async System.Threading.Tasks.Task SerializeAsync<T>(Stream stream, T value, IJsonFormatterResolver resolver)
+        public static async System.Threading.Tasks.Task SerializeAsync<T>(Stream stream, T value, IJsonFormatterResolver resolver,System.Threading.CancellationToken cancelToken = default)
         {
             if (resolver == null) resolver = DefaultResolver;
 
@@ -272,12 +272,12 @@ namespace Utf8Json
 
 #if NETSTANDARD
 
-        public static System.Threading.Tasks.Task<T> DeserializeAsync<T>(Stream stream)
+        public static System.Threading.Tasks.Task<T> DeserializeAsync<T>(Stream stream, System.Threading.CancellationToken cancelToken = default)
         {
-            return DeserializeAsync<T>(stream, defaultResolver);
+            return DeserializeAsync<T>(stream, defaultResolver,cancelToken);
         }
 
-        public static async System.Threading.Tasks.Task<T> DeserializeAsync<T>(Stream stream, IJsonFormatterResolver resolver)
+        public static async System.Threading.Tasks.Task<T> DeserializeAsync<T>(Stream stream, IJsonFormatterResolver resolver, System.Threading.CancellationToken cancelToken = default)
         {
             if (resolver == null) resolver = DefaultResolver;
 
@@ -287,7 +287,7 @@ namespace Utf8Json
             {
                 int length = 0;
                 int read;
-                while ((read = await stream.ReadAsync(buf, length, buf.Length - length).ConfigureAwait(false)) > 0)
+                while ((read = await stream.ReadAsync(buf, length, buf.Length - length, cancelToken).ConfigureAwait(false)) > 0)
                 {
                     length += read;
                     if (length == buf.Length)
