@@ -487,16 +487,16 @@ namespace Utf8Json.Internal
 #if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteSingle(ref byte[] bytes, int offset, float value)
+        public static int WriteSingle(ref byte[] bytes, int offset, float value, bool forceTrailingZero = false)
         {
-            return DoubleToStringConverter.GetBytes(ref bytes, offset, value);
+            return DoubleToStringConverter.GetBytes(ref bytes, offset, value, forceTrailingZero);
         }
 #if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteDouble(ref byte[] bytes, int offset, double value)
+        public static int WriteDouble(ref byte[] bytes, int offset, double value, bool forceTrailingZero = false)
         {
-            return DoubleToStringConverter.GetBytes(ref bytes, offset, value);
+            return DoubleToStringConverter.GetBytes(ref bytes, offset, value, forceTrailingZero);
         }
 
         // boolean is not number:)

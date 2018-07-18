@@ -18,8 +18,8 @@ namespace Utf8Json.Tests
                 var bin = JsonSerializer.Serialize<IList>(xs);
                 var v = JsonSerializer.Deserialize<IList>(bin);
 
-                ((double)v[0]).Is((double)1);
-                ((double)v[1]).Is((double)100);
+                ((long)v[0]).Is(1);
+                ((long)v[1]).Is(100);
                 ((string)v[2]).Is("hoge");
                 ((double)v[3]).Is(999.888);
             }
@@ -27,8 +27,8 @@ namespace Utf8Json.Tests
                 var bin = JsonSerializer.Serialize(xs);
                 var v = JsonSerializer.Deserialize<ArrayList>(bin);
 
-                ((double)v[0]).Is((double)1);
-                ((double)v[1]).Is((double)100);
+                ((long)v[0]).Is(1);
+                ((long)v[1]).Is(100);
                 ((string)v[2]).Is("hoge");
                 ((double)v[3]).Is(999.888);
             }
@@ -42,7 +42,7 @@ namespace Utf8Json.Tests
                 var bin = JsonSerializer.Serialize<IDictionary>(xs);
                 var v = JsonSerializer.Deserialize<IDictionary>(bin);
 
-                v["a"].Is((object)(double)1);
+                v["a"].Is((object)(long)1);
                 v["100"].Is((object)(string)"hoge");
                 v["foo"].Is((object)(double)999.888);
             }
@@ -51,7 +51,7 @@ namespace Utf8Json.Tests
                 var bin = JsonSerializer.Serialize<Hashtable>(xs);
                 var v = JsonSerializer.Deserialize<Hashtable>(bin);
 
-                v["a"].Is((object)(double)1);
+                v["a"].Is((object)(long)1);
                 v["100"].Is((object)(string)"hoge");
                 v["foo"].Is((object)(double)999.888);
             }
@@ -66,10 +66,10 @@ namespace Utf8Json.Tests
 				var v = JsonSerializer.Deserialize<IEnumerable>(bin).GetEnumerator();
 
                 v.MoveNext();
-                ((double)v.Current).Is((double)1);
+                ((long)v.Current).Is(1);
 
                 v.MoveNext();
-                ((double)v.Current).Is((double)100);
+                ((long)v.Current).Is(100);
 
                 v.MoveNext();
                 ((string)v.Current).Is("hoge");
@@ -91,10 +91,10 @@ namespace Utf8Json.Tests
                 var v = v2.GetEnumerator();
 
                 v.MoveNext();
-                ((double)v.Current).Is((double)1);
+                ((long)v.Current).Is(1);
 
                 v.MoveNext();
-                ((double)v.Current).Is((double)100);
+                ((long)v.Current).Is(100);
 
                 v.MoveNext();
                 ((string)v.Current).Is("hoge");

@@ -110,10 +110,10 @@ namespace Utf8Json.Internal.DoubleConversion
             return toStringBuffer;
         }
 
-        public static int GetBytes(ref byte[] buffer, int offset, float value)
+        public static int GetBytes(ref byte[] buffer, int offset, float value, bool forceTrailingZero = false)
         {
             var sb = new StringBuilder(buffer, offset);
-            if (!ToShortestIeeeNumber(value, ref sb, DtoaMode.SHORTEST_SINGLE))
+            if (!ToShortestIeeeNumber(value, ref sb, DtoaMode.SHORTEST_SINGLE, forceTrailingZero))
             {
                 throw new InvalidOperationException("not support float value:" + value);
             }
@@ -122,10 +122,10 @@ namespace Utf8Json.Internal.DoubleConversion
             return sb.offset - offset;
         }
 
-        public static int GetBytes(ref byte[] buffer, int offset, double value)
+        public static int GetBytes(ref byte[] buffer, int offset, double value, bool forceTrailingZero = false)
         {
             var sb = new StringBuilder(buffer, offset);
-            if (!ToShortestIeeeNumber(value, ref sb, DtoaMode.SHORTEST))
+            if (!ToShortestIeeeNumber(value, ref sb, DtoaMode.SHORTEST, forceTrailingZero))
             {
                 throw new InvalidOperationException("not support double value:" + value);
             }
@@ -175,23 +175,23 @@ namespace Utf8Json.Internal.DoubleConversion
         static readonly byte[] infinity_symbol_ = StringEncoding.UTF8.GetBytes(double.PositiveInfinity.ToString());
         static readonly byte[] nan_symbol_ = StringEncoding.UTF8.GetBytes(double.NaN.ToString());
 
-        // constructor parameter, same as EcmaScriptConverter
-        //DoubleToStringConverter(int flags,
-        //                  const char* infinity_symbol,
-        //                  const char* nan_symbol,
-        //                  char exponent_character,
-        //                  int decimal_in_shortest_low,
-        //                  int decimal_in_shortest_high,
-        //                  int max_leading_padding_zeroes_in_precision_mode,
-        //                  int max_trailing_padding_zeroes_in_precision_mode)
+		// constructor parameter, same as EcmaScriptConverter
+		//DoubleToStringConverter(int flags,
+		//                  const char* infinity_symbol,
+		//                  const char* nan_symbol,
+		//                  char exponent_character,
+		//                  int decimal_in_shortest_low,
+		//                  int decimal_in_shortest_high,
+		//                  int max_leading_padding_zeroes_in_precision_mode,
+		//                  int max_trailing_padding_zeroes_in_precision_mode)
 
-        //const char exponent_character_;
-        //const int decimal_in_shortest_low_;
-        //const int decimal_in_shortest_high_;
-        //const int max_leading_padding_zeroes_in_precision_mode_;
-        //const int max_trailing_padding_zeroes_in_precision_mode_;
+		//const char exponent_character_;
+		//const int decimal_in_shortest_low_;
+		//const int decimal_in_shortest_high_;
+		//const int max_leading_padding_zeroes_in_precision_mode_;
+		//const int max_trailing_padding_zeroes_in_precision_mode_;
 
-        static readonly Flags flags_ = Flags.UNIQUE_ZERO | Flags.EMIT_POSITIVE_EXPONENT_SIGN;
+		static readonly Flags flags_ = Flags.UNIQUE_ZERO | Flags.EMIT_POSITIVE_EXPONENT_SIGN;
         static readonly char exponent_character_ = 'E';
         static readonly int decimal_in_shortest_low_ = -4; // C# ToString("G")
         static readonly int decimal_in_shortest_high_ = 15;// C# ToString("G")
@@ -644,7 +644,8 @@ namespace Utf8Json.Internal.DoubleConversion
         static bool ToShortestIeeeNumber(
             double value,
             ref StringBuilder result_builder,
-            DtoaMode mode)
+            DtoaMode mode,
+			bool forceTrailingZero)
         {
             if (new Double(value).IsSpecial())
             {
@@ -681,7 +682,8 @@ namespace Utf8Json.Internal.DoubleConversion
                 CreateDecimalRepresentation(decimal_rep, decimal_rep_length,
                                             decimal_point,
                                             Math.Max(0, decimal_rep_length - decimal_point),
-                                            ref result_builder);
+                                            ref result_builder,
+											forceTrailingZero);
             }
             else
             {
@@ -697,7 +699,8 @@ namespace Utf8Json.Internal.DoubleConversion
             int length,
             int decimal_point,
             int digits_after_point,
-            ref StringBuilder result_builder)
+            ref StringBuilder result_builder,
+			bool forceTrailingZero)
         {
             // Create a representation that is padded with zeros if needed.
             if (decimal_point <= 0)
@@ -735,14 +738,14 @@ namespace Utf8Json.Internal.DoubleConversion
             }
             if (digits_after_point == 0)
             {
-                if ((flags_ & Flags.EMIT_TRAILING_DECIMAL_POINT) != 0)
-                {
-                    result_builder.AddCharacter((byte)'.');
-                }
-                if ((flags_ & Flags.EMIT_TRAILING_ZERO_AFTER_POINT) != 0)
-                {
-                    result_builder.AddCharacter((byte)'0');
-                }
+				if (forceTrailingZero || (flags_ & Flags.EMIT_TRAILING_DECIMAL_POINT) != 0)
+				{
+					result_builder.AddCharacter((byte)'.');
+					if (forceTrailingZero || (flags_ & Flags.EMIT_TRAILING_ZERO_AFTER_POINT) != 0)
+					{
+						result_builder.AddCharacter((byte)'0');
+					}
+				}
             }
         }
 

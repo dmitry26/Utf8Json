@@ -130,7 +130,11 @@ namespace Utf8Json.Formatters
                         return list;
                     }
                 case JsonToken.Number:
-                    return reader.ReadDouble();
+                    var segNum = reader.ReadNumberSegment();
+                    var l = Utf8Json.Internal.NumberConverter.ReadInt64(segNum.Array,segNum.Offset,out var readCount);
+                    if (readCount == segNum.Count)
+                        return l;
+                    return Utf8Json.Internal.NumberConverter.ReadDouble(segNum.Array,segNum.Offset,out readCount);
                 case JsonToken.String:
                     return reader.ReadString();
                 case JsonToken.True:

@@ -19,17 +19,17 @@ namespace Utf8Json.Tests
             return Math.Abs(b - a) < Math.Max(1E-06 * Math.Max(Math.Abs(a), Math.Abs(b)), double.Epsilon * 8.0);
         }
 
-        static string GetString(double v)
+        static string GetString(double v, bool forceTrailingZero = false)
         {
             byte[] buf = null;
-            var len = NumberConverter.WriteDouble(ref buf, 0, v);
+            var len = NumberConverter.WriteDouble(ref buf, 0, v, forceTrailingZero);
             return Encoding.UTF8.GetString(buf, 0, len);
         }
 
-        static string GetString(float v)
+        static string GetString(float v, bool forceTrailingZero = false)
         {
             byte[] buf = null;
-            var len = NumberConverter.WriteSingle(ref buf, 0, v);
+            var len = NumberConverter.WriteSingle(ref buf, 0, v, forceTrailingZero);
             return Encoding.UTF8.GetString(buf, 0, len);
         }
 
@@ -68,7 +68,8 @@ namespace Utf8Json.Tests
             foreach (var item in new[] { double.NaN, double.NegativeInfinity, double.PositiveInfinity, 0.000, })
             {
                 GetString(item).Is(item.ToString());
-            }
+				GetString(item,true).Is(item.ToString("0.0###"));
+			}
 
             // has e
             foreach (var item in new[] { 1000000000000000.0, 0.00001 })
@@ -107,7 +108,8 @@ namespace Utf8Json.Tests
             foreach (var item in new[] { float.NaN, float.NegativeInfinity, float.PositiveInfinity, 0.000f, })
             {
                 GetString(item).Is(item.ToString());
-            }
+				GetString(item,true).Is(item.ToString("0.0###"));
+			}
 
             // has e
             foreach (var item in new[] { 1000000000000000.0f, 0.00001f })
