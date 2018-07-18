@@ -1063,6 +1063,9 @@ namespace Utf8Json.Resolvers.Internal
         static void EmitSerializeValue(TypeInfo type, MetaMember member, ILGenerator il, int index, Func<int, MetaMember, bool> tryEmitLoadCustomFormatter, ArgumentField writer, ArgumentField argValue, ArgumentField argResolver)
         {
             var t = member.Type;
+            //if (member.IsProperty && t.IsByRef && t.HasElementType)
+                //t = t.GetElementType();
+
             if (member is InnerExceptionMetaMember)
             {
                 (member as InnerExceptionMetaMember).EmitSerializeDirectly(il);

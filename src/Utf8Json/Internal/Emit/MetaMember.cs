@@ -20,7 +20,7 @@ namespace Utf8Json.Internal.Emit
         public Type Type { get; private set; }
         public FieldInfo FieldInfo { get; private set; }
         public PropertyInfo PropertyInfo { get; private set; }
-        public MethodInfo ShouldSerializeMethodInfo { get; private set; }
+        public MethodInfo ShouldSerializeMethodInfo { get; private set; }       
 
         MethodInfo getMethod;
         MethodInfo setMethod;
@@ -53,7 +53,12 @@ namespace Utf8Json.Internal.Emit
             this.Name = name;
             this.MemberName = info.Name;
             this.PropertyInfo = info;
-            this.Type = info.PropertyType;
+
+            var propType = info.PropertyType;
+            this.Type = propType.IsByRef && propType.HasElementType
+                ? propType.GetElementType()
+                : propType;
+
             this.IsReadable = (getMethod != null) && (allowPrivate || getMethod.IsPublic) && !getMethod.IsStatic;
             this.IsWritable = (setMethod != null) && (allowPrivate || setMethod.IsPublic) && !setMethod.IsStatic;
             this.ShouldSerializeMethodInfo = GetShouldSerialize(info);
@@ -88,8 +93,10 @@ namespace Utf8Json.Internal.Emit
         public virtual void EmitLoadValue(ILGenerator il)
         {
             if (IsProperty)
-            {
+            {               
                 il.EmitCall(getMethod);
+
+                if (PropertyInfo.PropertyType.IsByRef) il.Emit(OpCodes.Ldobj,Type);             
             }
             else
             {
